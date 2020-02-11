@@ -9,7 +9,7 @@ Please do not run a database on it.
 ```hcl
 module "airflow_nfs" {
   source  = "kiwicom/gke-nfs/kubernetes"
-  version = "1.0.0"
+  version = "0.1.0"
 
   name      = "nfs"
   namespace = "example"

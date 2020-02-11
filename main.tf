@@ -62,6 +62,9 @@ resource "kubernetes_stateful_set" "nfs_server" {
         role = "${var.name}-nfs-server"
       }
     }
+    update_strategy {
+      type = "RollingUpdate"
+    }
     template {
       metadata {
         labels = {
