@@ -17,3 +17,8 @@ variable "zones" {
 }
 
 variable "namespace" {}
+
+variable "annotations" {
+  type    = map
+  default = {}
+}

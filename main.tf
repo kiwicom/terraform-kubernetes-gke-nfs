@@ -52,8 +52,9 @@ resource "kubernetes_persistent_volume_claim" "nfs_disk" {
 
 resource "kubernetes_stateful_set" "nfs_server" {
   metadata {
-    name      = "${var.name}-nfs-server"
-    namespace = var.namespace
+    name        = "${var.name}-nfs-server"
+    namespace   = var.namespace
+    annotations = var.annotations
   }
   spec {
     replicas = 1
@@ -73,10 +74,10 @@ resource "kubernetes_stateful_set" "nfs_server" {
       }
       spec {
         init_container {
-          name  = "mkdirs"
-          image = "busybox:latest"
-          command = ["/bin/sh","-c"]
-          args = [join("; ", formatlist("mkdir -p /exports/${var.namespace}-%s", keys(var.volumes)) )]
+          name    = "mkdirs"
+          image   = "busybox:latest"
+          command = ["/bin/sh", "-c"]
+          args    = [join("; ", formatlist("mkdir -p /exports/${var.namespace}-%s", keys(var.volumes)))]
           volume_mount {
             mount_path = "/exports"
             name       = "${var.name}-nfs-backend"
@@ -119,8 +120,9 @@ resource "kubernetes_stateful_set" "nfs_server" {
 
 resource "kubernetes_service" "nfs_server" {
   metadata {
-    name      = "${var.name}-nfs-server"
-    namespace = var.namespace
+    name        = "${var.name}-nfs-server"
+    namespace   = var.namespace
+    annotations = var.annotations
   }
   spec {
     selector = {
@@ -164,7 +166,7 @@ resource "kubernetes_persistent_volume" "nfs" {
 resource "kubernetes_persistent_volume_claim" "nfs" {
   for_each = var.volumes
   metadata {
-    name = each.key
+    name      = each.key
     namespace = var.namespace
   }
   spec {
