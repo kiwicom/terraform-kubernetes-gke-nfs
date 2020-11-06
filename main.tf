@@ -105,6 +105,16 @@ resource "kubernetes_stateful_set" "nfs_server" {
             mount_path = "/exports"
             name       = "${var.name}-nfs-backend"
           }
+          resources {
+            requests {
+              cpu    = var.request_cpu
+              memory = var.request_memory
+            }
+            limits {
+              cpu    = var.limit_cpu
+              memory = var.limit_memory
+            }
+          }
         }
         volume {
           name = "${var.name}-nfs-backend"

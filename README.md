@@ -14,6 +14,11 @@ module "airflow_nfs" {
   name      = "nfs"
   namespace = "example"
 
+  request_cpu    = "12"
+  request_memory = "12Gi"
+  limit_cpu      = "24"
+  limit_memory   = "12Gi"
+
   volumes = {
     "nfs-airflow-dags" = 10
     "nfs-airflow-logs" = 10
@@ -59,6 +64,3 @@ spec:
         persistentVolumeClaim:
           claimName: nfs-airflow-logs
 ```
-
-## TODOs:
-- make resource requests/limits configurable and set some smart defaults

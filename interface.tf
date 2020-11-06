@@ -22,3 +22,23 @@ variable "annotations" {
   type    = map
   default = {}
 }
+
+variable "request_cpu" {
+  type    = string
+  default = null
+}
+
+variable "request_memory" {
+  type    = string
+  default = null
+}
+
+variable "limit_cpu" {
+  type    = string
+  default = null
+}
+
+variable "limit_memory" {
+  type    = string
+  default = null
+}
