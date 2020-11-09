@@ -135,6 +135,8 @@ resource "kubernetes_service" "nfs_server" {
     annotations = var.annotations
   }
   spec {
+    type       = "ClusterIP"
+    cluster_ip = "None"
     selector = {
       role = "${var.name}-nfs-server"
     }
@@ -167,7 +169,7 @@ resource "kubernetes_persistent_volume" "nfs" {
     persistent_volume_source {
       nfs {
         path   = "/exports/${var.namespace}-${each.key}"
-        server = kubernetes_service.nfs_server.spec[0].cluster_ip
+        server = "${kubernetes_service.nfs_server.metadata[0].name}.${kubernetes_service.nfs_server.metadata[0].namespace}.svc.cluster.local."
       }
     }
   }
@@ -190,4 +192,3 @@ resource "kubernetes_persistent_volume_claim" "nfs" {
     }
   }
 }
-
