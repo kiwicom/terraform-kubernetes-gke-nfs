@@ -42,3 +42,7 @@ variable "limit_memory" {
   type    = string
   default = null
 }
+
+variable "tolerations" {
+  default = {}
+}

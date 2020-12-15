@@ -83,6 +83,34 @@ resource "kubernetes_stateful_set" "nfs_server" {
             name       = "${var.name}-nfs-backend"
           }
         }
+
+        /*
+        tolerations:
+        - key: preemptible-general
+          operator: Equal
+          value: "yes"
+          effect: NoSchedule
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:   #dynamic
+              - matchExpressions:
+                - key: cloud.google.com/gke-preemptible
+                  operator: In
+                  values:
+                  - "true"
+         */
+
+        dynamic "toleration" {
+          for_each = var.tolerations
+          content {
+            key      = toleration.key
+            operator = "Equal"
+            value    = toleration.value
+            effect   = "NoSchedule"
+          }
+        }
+
         container {
           name  = "${var.name}-nfs-server"
           image = "k8s.gcr.io/volume-nfs:0.8"
