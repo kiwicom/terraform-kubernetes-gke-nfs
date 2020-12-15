@@ -46,3 +46,7 @@ variable "limit_memory" {
 variable "tolerations" {
   default = {}
 }
+
+variable "node_selector_terms" {
+  default = {}
+}

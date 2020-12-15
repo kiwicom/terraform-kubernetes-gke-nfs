@@ -84,22 +84,22 @@ resource "kubernetes_stateful_set" "nfs_server" {
           }
         }
 
-        /*
-        tolerations:
-        - key: preemptible-general
-          operator: Equal
-          value: "yes"
-          effect: NoSchedule
-        affinity:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:   #dynamic
-              - matchExpressions:
-                - key: cloud.google.com/gke-preemptible
-                  operator: In
-                  values:
-                  - "true"
-         */
+        affinity {
+          node_affinity {
+            required_during_scheduling_ignored_during_execution {
+              dynamic "node_selector_term" {
+                for_each = var.node_selector_terms
+                content {
+                  match_expressions {
+                    key      = node_selector_term.key
+                    operator = "In"
+                    values   = [node_selector_term.value]
+                  }
+                }
+              }
+            }
+          }
+        }
 
         dynamic "toleration" {
           for_each = var.tolerations
