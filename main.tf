@@ -50,6 +50,10 @@ resource "kubernetes_persistent_volume_claim" "nfs_disk" {
   }
 }
 
+locals {
+  affinity_condition = var.node_selector_terms == {} ? [] : [true]
+}
+
 resource "kubernetes_stateful_set" "nfs_server" {
   metadata {
     name        = "${var.name}-nfs-server"
@@ -83,6 +87,43 @@ resource "kubernetes_stateful_set" "nfs_server" {
             name       = "${var.name}-nfs-backend"
           }
         }
+
+        dynamic "affinity" {
+          for_each = local.affinity_condition
+          content {
+            dynamic "node_affinity" {
+              for_each = local.affinity_condition
+              content {
+                dynamic "required_during_scheduling_ignored_during_execution" {
+                  for_each = local.affinity_condition
+                  content {
+                    dynamic "node_selector_term" {
+                      for_each = var.node_selector_terms
+                      content {
+                        match_expressions {
+                          key      = node_selector_term.key
+                          operator = "In"
+                          values   = [node_selector_term.value]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        dynamic "toleration" {
+          for_each = var.tolerations
+          content {
+            key      = toleration.key
+            operator = "Equal"
+            value    = toleration.value
+            effect   = "NoSchedule"
+          }
+        }
+
         container {
           name  = "${var.name}-nfs-server"
           image = "k8s.gcr.io/volume-nfs:0.8"

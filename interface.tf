@@ -42,3 +42,12 @@ variable "limit_memory" {
   type    = string
   default = null
 }
+
+variable "tolerations" {
+  default = {}
+}
+
+variable "node_selector_terms" {
+  description = "used for nodeAffinity"
+  default = {}
+}
