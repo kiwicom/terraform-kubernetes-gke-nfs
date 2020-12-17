@@ -48,5 +48,6 @@ variable "tolerations" {
 }
 
 variable "node_selector_terms" {
+  description = "used for nodeAffinity"
   default = {}
 }
