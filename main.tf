@@ -106,11 +106,11 @@ resource "kubernetes_stateful_set" "nfs_server" {
             name       = "${var.name}-nfs-backend"
           }
           resources {
-            requests {
+            requests = {
               cpu    = var.request_cpu
               memory = var.request_memory
             }
-            limits {
+            limits = {
               cpu    = var.limit_cpu
               memory = var.limit_memory
             }
